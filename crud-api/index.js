@@ -1,7 +1,10 @@
+require("dotenv").config();
 const express = require("express");
-const mongoose = require("mongoose");
 const app = express();
 const productRoute = require("./routes/product.routes");
+const connectToDatabase = require("./lib");
+
+const PORT = process.env.port || 5000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -13,17 +16,6 @@ app.get("/", (req, res) => {
 // routes
 app.use("/api/products", productRoute);
 
-async function connectToDatabase() {
-  try {
-    await mongoose.connect(
-      "mongodb+srv://saeedyussif663:33jIEnIwkRNv2wY1@cruddb.jzvajch.mongodb.net/CRUD_API?retryWrites=true&w=majority&appName=cruddb",
-      { useNewUrlParser: true, useUnifiedTopology: true }
-    );
-    console.log("Connected!");
-  } catch (error) {
-    console.log("Failed to connect", error);
-  }
-}
-
-connectToDatabase();
-app.listen(8080);
+app.listen(PORT, () => {
+  connectToDatabase();
+});
